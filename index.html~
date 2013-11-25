@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script type="text/javascript" src="../boxandlight/inheritance.js"></script>
+  <script src="../canvas/Stats.js"></script>
+
+  <script type="text/javascript" src="Listenable.js"></script>
+  <script type="text/javascript" src="Game.js"></script>
+  <script type="text/javascript" src="ClientGame.js"></script>
+  <script type="text/javascript" src="ContextPop.js"></script>
+  <script type="text/javascript" src="ContextMenu.js"></script>
+  <script type="text/javascript" src="Object.js"></script>
+  <script type="text/javascript" src="WorldObject.js"></script>
+  <script type="text/javascript" src="Living.js"></script>
+  <script type="text/javascript" src="House.js"></script>
+  <script type="text/javascript" src="Rabbit.js"></script>
+  
+  <style>
+    html, body{
+      margin: 0px; padding:0px;
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="can"></canvas>
+  
+<script type="text/javascript">
+  
+  can = document.getElementById("can");
+  ctx = can.getContext("2d");
+
+  stats_tick = new Stats();
+  stats_tick.domElement.style.position = 'absolute';
+  stats_tick.domElement.style.right = '0px';
+  stats_tick.domElement.style.top = '0px';
+  can.parentNode.appendChild( stats_tick.domElement );
+  
+  game = new Game.ClientGame(can, ctx);
+  to = new Game.House({pos:{x: 80, y: 80}}, game);
+  game.addObject(to);
+  rab = new Game.Rabbit({pos:{x: 160, y: 160}}, game);
+  game.addObject(rab);
+  
+  var lastTime = 0, tickrate = 1000/60;
+  function tick(time){
+    //game.tickrate = Math.random()*500;
+    stats_tick.begin();
+
+    var currTime = new Date().getTime();
+    game.tick(currTime);
+    game.draw(currTime);
+    //if(time!=currTime){console.log("Lost frame?", currTime-time);}
+    var timeToCall = Math.max(0, tickrate - (currTime - lastTime));
+    window.setTimeout(function() { tick(currTime + timeToCall); },
+      timeToCall);
+    lastTime = currTime + timeToCall;
+
+    stats_tick.end();
+  }
+  tick(new Date().getTime());
+</script>
+</html>
