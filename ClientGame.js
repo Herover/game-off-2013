@@ -104,6 +104,7 @@ Game.ClientGame = Game.Game.extend({
     this.selected = target;
     
     this.contextmenu.setTarget(target);
+    this.contextmenu.setMenu(target);
 
     target.selected = true;
   },
@@ -139,47 +140,56 @@ Game.ClientGame = Game.Game.extend({
           y = e.clientY,
           target = false,
           pos = this.clickToScreenPos(e),
-          worldpos;
+          worldpos = this.screenToWorldPos(pos),
+          hasReacted = false;
       
       if(
-        pos.x > this.contextmenu.pos.x &&
-        pos.y > this.contextmenu.pos.y &&
-        pos.y < this.contextmenu.pos.y + this.contextmenu.fullHeight &&
-        pos.x < this.contextmenu.pos.x + this.contextmenu.size.w
+        this.contextmenu.active &&
+        worldpos.x > this.contextmenu.pos.x &&
+        worldpos.y > this.contextmenu.pos.y &&
+        worldpos.y < this.contextmenu.pos.y + this.contextmenu.fullHeight &&
+        worldpos.x < this.contextmenu.pos.x + this.contextmenu.size.w
       ){
-        this.contextmenu.onClick({x: pos.x - this.contextmenu.pos.x, y: pos.y - this.contextmenu.pos.y});
+        this.contextmenu.onClick({x: worldpos.x - this.contextmenu.pos.x, y: worldpos.y - this.contextmenu.pos.y});
+        hasReacted = true;
         //return false;
       }
       
-      worldpos = this.screenToWorldPos(pos);
-      target = this.getObjectAt(worldpos);
-      
-      console.log(x,y,pos, target, e);
-      
-      //TODO: clean up
-      
-      if(e.button == 0){  //Left click
-        if(target){       //on a new target
-          if(this.selected){
-            var res = this.selected.onWorldClick(worldpos, target);
-            if(!res)
+      if(!hasReacted){
+        target = this.getObjectAt(worldpos);
+        
+        console.log(pos, target, e);
+        
+        //TODO: clean up
+        
+        if(e.button == 0){  //Left click
+          if(target){       //on a new target
+            if(this.selected){
+              var res = this.selected.onWorldClick(worldpos, target);
+              if(!res)
+                this.setSelected(target);
+            }
+            else
               this.setSelected(target);
+            
           }
-          else
-            this.setSelected(target);
-          
-        }
-        else if(this.selected){//no new target, send to old
-          if(this.selected){
-            //console.log(this.selected);
-            this.selected.onWorldClick(worldpos, false);
+          else if(this.selected){//no new target, send to old
+            if(this.selected){
+              //console.log(this.selected);
+              if(!this.selected.onWorldClick(worldpos, false)){
+                this.selected.selected = false;
+                this.selected = false;
+                this.contextmenu.destroy();
+              }
+            }
           }
         }
-      }
-      if(this.selected && e.button == 2){
-        this.selected.selected = false;
-        this.selected = false;
-        //return false;
+        if(this.selected && e.button == 2){
+          this.selected.selected = false;
+          this.selected = false;
+          this.contextmenu.destroy();
+          //return false;
+        }
       }
     }
     

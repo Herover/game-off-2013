@@ -20,6 +20,11 @@ List of main features
 * Wildlife is under development.
 * Multiplayer is sort-of prepared, but not actual gameplay is higher priority.
 
+## Open source software
+Code from the following open source projects have been used:
+* ["Simple JavaScript Inheritance"](https://github.com/mrdoob/stats.js/) by John Resig http://ejohn.org/ MIT
+* ["stats.js"](http://ejohn.org/blog/simple-javascript-inheritance/) by mrdoob http://mrdoob.com/ MIT
+
 ## License
 You can view the code, fork and publish your own version of this game, sell the product under a open source or non-open source license. (MIT/Beerware license).
 Attribution is not needed, but a kind thing to do :)

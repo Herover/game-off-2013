@@ -24,7 +24,7 @@ Game.Game = Listenable.extend({
   eachObject: function(callback){
     for(var i = 0; i < this.world.length; i++){
       
-      //Perfomance, don't use for(var ... i  ...)
+      //Perfomance, don't use for(var ... in ...)
       //But check if actual index exists
       if(typeof this.world[i] == "undefined"){
         numberOfDeadItems++;
@@ -47,5 +47,9 @@ Game.Game = Listenable.extend({
       this.world[i].tick(time - this.lasttick, time);
     });
     this.lasttick = time;
+  },
+  //Could be nice to be able to procedually generate world on-the-go
+  generateWorld: function(width, height){
+    
   }
 });

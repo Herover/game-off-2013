@@ -5,6 +5,11 @@ Game.Plant = Game.WorldObject.extend({
     this.inventory.max = 10;
     
     this.branches = this.mkPlant(3, 0, 4, {x: 0, y: 0, r: 0, l: 40});
+    
+    this.bbox.x = -15;
+    this.bbox.y = -20;
+    this.bbox.w = 80;
+    this.bbox.h = 70;
   },
   loadData: function(data){
     this._super(data);

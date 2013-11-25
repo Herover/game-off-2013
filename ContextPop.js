@@ -8,6 +8,7 @@ Game.ContextPop = Listenable.extend({
     this.fullHeight = 0;
     this.menu = null;
     this.target = null;
+    this.active = false;
   },
   draw: function(){
     this.updatePos();
@@ -22,6 +23,15 @@ Game.ContextPop = Listenable.extend({
   },
   setTarget: function(target){
     this.target = target;
-    this.menu = target.getContextMenu();
+  },
+  setMenu: function(menu){
+    if(typeof menu.getContextMenu == "function")
+      menu = menu.getContextMenu();
+    this.menu = menu;
+    this.active = true;
+  },
+  destroy: function(){
+    this.active = false;
+    this.menu = [];
   }
 });

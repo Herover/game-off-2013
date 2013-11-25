@@ -22,10 +22,35 @@ Game.Man = Game.Living.extend({
   onWorldClick: function(pos, data){
     this._super(pos, data);
     if(data){
-      this.game.contextmenu
+      var me = this;
+      this.game.contextmenu.setMenu([
+        {
+          c: function(){
+            var items = [], n = 0;
+            for(var i in data.inventory.lists){
+              var localn = n,
+                  locali = i;
+              items[n] = {
+                c: function(){
+                  console.log("item",localn);
+                },
+                txt: data.inventory.lists[locali][0].Strings.name + ": " + data.inventory.lists[locali].length
+              };
+            }
+            console.log(items);
+            me.game.contextmenu.setMenu(
+              items
+            );
+          },
+          txt: "Inventory"
+        }
+      ]);
+      this.game.contextmenu.setTarget(data);
     }
-    this.movingto.x = pos.x;
-    this.movingto.y = pos.y;
+    else{
+      this.movingto.x = pos.x;
+      this.movingto.y = pos.y;
+    }
     return true;
   }
 });
