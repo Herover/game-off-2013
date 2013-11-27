@@ -26,6 +26,13 @@ Game.ClientGame = Game.Game.extend({
     can.addEventListener("contextmenu",    function(e){me.onClick.call(me,e);});
     can.addEventListener("mousewheel",     function(e){me.onScroll.call(me,e);});
     can.addEventListener("DOMMouseScroll", function(e){me.onScroll.call(me,e);});
+    
+    can.addEventListener("touchstart",     function(e){me.onTouchStart.call(me,e);});
+    can.addEventListener("touchend",       function(e){me.onTouchEnd.call(me,e);});
+    can.addEventListener("touchleave",     function(e){me.onTouchEnd.call(me,e);});
+    can.addEventListener("touchcancel",    function(e){me.onTouchCancel.call(me,e);});
+    can.addEventListener("touchmove",      function(e){me.onTouchMove.call(me,e);});
+    
     window.addEventListener("resize",this.resize);
     this.resize();
   },
@@ -59,19 +66,18 @@ Game.ClientGame = Game.Game.extend({
   },
   //Tages {x: x, y: y} coordinate set 
   //Relative to world (0,0) coords
-  getObjectAt: function(pos){
-    var target = false;
+  getObjectsAt: function(pos){
+    var targets = [];
     this.eachObject(function(o,i){
       if(   pos.x > o.pos.x + o.bbox.x
          && pos.y > o.pos.y + o.bbox.y
          && pos.x < o.pos.x + o.bbox.x + o.bbox.w
          && pos.y < o.pos.y + o.bbox.y + o.bbox.h ){
-        target = o;
-        return true;
+        targets.push(o);
       }
       return false;
     });
-    return target;
+    return targets;
   },
   /*
     Turn coords on screnn into coords on canvas.
@@ -101,17 +107,17 @@ Game.ClientGame = Game.Game.extend({
   setSelected: function(select){
     if(this.selected)
       this.selected.selected = false;
-    this.selected = target;
+    this.selected = select;
     
-    this.contextmenu.setTarget(target);
-    this.contextmenu.setMenu(target);
+    this.contextmenu.setTarget(select);
+    this.contextmenu.setMenu(select);
 
-    target.selected = true;
+    select.selected = true;
   },
   onMouseDown: function(e){
     e.preventDefault();
     var pos = this.clickToScreenPos(e);
-    target = this.getObjectAt(this.screenToWorldPos(pos));
+    //target = this.getObjectAt(this.screenToWorldPos(pos));
     this.mouse.click.x = pos.x;
     this.mouse.click.y = pos.y;
     
@@ -138,7 +144,7 @@ Game.ClientGame = Game.Game.extend({
       
       var x = e.clientX,
           y = e.clientY,
-          target = false,
+          targets,
           pos = this.clickToScreenPos(e),
           worldpos = this.screenToWorldPos(pos),
           hasReacted = false;
@@ -156,7 +162,20 @@ Game.ClientGame = Game.Game.extend({
       }
       
       if(!hasReacted){
-        target = this.getObjectAt(worldpos);
+        targets = this.getObjectsAt(worldpos);
+        /*
+          When clicking on a place with multiple object, prefer the objects with
+          a small bbox - also if they are hidden behind a larger object
+        */
+        var target = false;
+        if(targets.length>0){
+          target = targets[0];
+          for(var i = 1; i < targets.length; i++){
+            if(target.bbox.w * target.bbox.h < targets[i].bbox.w * targets[i].bbox.h){
+              target = targets[i];
+            }
+          }
+        }
         
         console.log(pos, target, e);
         
@@ -173,9 +192,10 @@ Game.ClientGame = Game.Game.extend({
               this.setSelected(target);
             
           }
-          else if(this.selected){//no new target, send to old
+          else if(this.selected){//no new target, send world position to currently selected
             if(this.selected){
-              //console.log(this.selected);
+              //onWorldClick must return true if it decides to do something, and not give
+              //control to someone else
               if(!this.selected.onWorldClick(worldpos, false)){
                 this.selected.selected = false;
                 this.selected = false;
@@ -233,6 +253,13 @@ Game.ClientGame = Game.Game.extend({
       console.log(this.viewport);
     }*/
   },
+  
+  onTouchStart: function(e){
+    e.preventDefault();
+    console.log(e);
+  },
+  
+  
   onScroll: function(e){
     /*e.preventDefault();
 

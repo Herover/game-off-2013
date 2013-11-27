@@ -47,10 +47,10 @@ Game.Man = Game.Living.extend({
       ]);
       this.game.contextmenu.setTarget(data);
     }
-    else{
-      this.movingto.x = pos.x;
-      this.movingto.y = pos.y;
-    }
+    //else{
+    this.movingto.x = pos.x;
+    this.movingto.y = pos.y;
+    //}
     return true;
   }
 });
