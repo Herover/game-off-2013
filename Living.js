@@ -4,12 +4,15 @@ Game.Living = Game.WorldObject.extend({
     
     this.goto = null;
     
+    this.movingtoreached = false;
+    
   },
   loadData: function(data){
     this._super(data);
+    console.log(this.pos);
     if(typeof data.movingto == "object"){
-      this.movingto.x = data.movingto.x||0;
-      this.movingto.y = data.movingto.y||0;
+      this.movingto.x = data.movingto.x||this.pos.x;
+      this.movingto.y = data.movingto.y||this.pos.y;
     }
     else
       this.movingto = {x: this.pos.x, y: this.pos.y};
@@ -18,6 +21,7 @@ Game.Living = Game.WorldObject.extend({
   moveto: function(pos){
     this.movingto.x = pos.x;
     this.movingto.y = pos.y;
+    this.movingtoreached = false;
   },
   tick: function(time_d, time){
     this._super(time_d, time);
@@ -30,8 +34,12 @@ Game.Living = Game.WorldObject.extend({
       this.pos.y += (ty/dist)*this.movespeed*time_d;
     }
     else{
-      this.pos.x = this.movingto.x;
-      this.pos.y = this.movingto.y;
+      if(!this.movingtoreached){
+        this.pos.x = this.movingto.x;
+        this.pos.y = this.movingto.y;
+        this.movingtoreached = true;
+        this._listen("reachmoveto", null);
+      }
     }
   },
 });

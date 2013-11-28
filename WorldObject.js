@@ -36,7 +36,14 @@ Game.WorldObject = Game.Object.extend({
   getContextMenu: function(){
     return false;
   },
+  //onWorld events: fired when something happens in the world
+  //eg. object is selected and user click somewhere on the screen
   onWorldClick: function(pos, data){
+    return false;
+  },
+  //User point on a object
+  //Return something hinting the user what happens if clicked
+  onWorldHover: function(pos, data){
     return false;
   }
 });
