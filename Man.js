@@ -32,7 +32,7 @@ Game.Man = Game.Living.extend({
                   locali = i;
               items[n] = {
                 c: function(){
-                  console.log("item",localn);
+                  console.log("item",localn,data.inventory.lists[locali][0].Strings.name);
                 },
                 txt: data.inventory.lists[locali][0].Strings.name + ": " + data.inventory.lists[locali].length
               };
@@ -52,5 +52,11 @@ Game.Man = Game.Living.extend({
     this.movingto.y = pos.y;
     //}
     return true;
+  },
+  onWorldHover: function(pos, data){
+    this._super(pos, data);
+    if(data instanceof Game.Living){
+      return {txt: "Attack"};
+    }
   }
 });
