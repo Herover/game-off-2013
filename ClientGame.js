@@ -11,6 +11,7 @@ Game.ClientGame = Game.Game.extend({
       pos: {x: 0, y: 0},
       down: false
     };
+    this.mousehint = "test";
     
     this.selected = false;
     
@@ -61,10 +62,11 @@ Game.ClientGame = Game.Game.extend({
     }
 	
     ctx.restore();
+    ctx.fillText(this.mousehint, this.mouse.pos.x, this.mouse.pos.y);
     
     
   },
-  //Tages {x: x, y: y} coordinate set 
+  //Takes {x: x, y: y} coordinate set 
   //Relative to world (0,0) coords
   getObjectsAt: function(pos){
     var targets = [];
@@ -78,6 +80,23 @@ Game.ClientGame = Game.Game.extend({
       return false;
     });
     return targets;
+  },
+  getObjectAt: function(pos){
+    /*
+      When clicking on a place with multiple object, prefer the objects with
+      a small bbox - also if they are hidden behind a larger object
+    */
+    var target = false,
+        targets = this.getObjectsAt(pos);
+    if(targets.length>0){
+      target = targets[0];
+      for(var i = 1; i < targets.length; i++){
+        if(target.bbox.w * target.bbox.h < targets[i].bbox.w * targets[i].bbox.h){
+          target = targets[i];
+        }
+      }
+    }
+    return target;
   },
   /*
     Turn coords on screnn into coords on canvas.
@@ -162,20 +181,7 @@ Game.ClientGame = Game.Game.extend({
       }
       
       if(!hasReacted){
-        targets = this.getObjectsAt(worldpos);
-        /*
-          When clicking on a place with multiple object, prefer the objects with
-          a small bbox - also if they are hidden behind a larger object
-        */
-        var target = false;
-        if(targets.length>0){
-          target = targets[0];
-          for(var i = 1; i < targets.length; i++){
-            if(target.bbox.w * target.bbox.h < targets[i].bbox.w * targets[i].bbox.h){
-              target = targets[i];
-            }
-          }
-        }
+        target = this.getObjectAt(worldpos);
         
         console.log(pos, target, e);
         
@@ -227,6 +233,16 @@ Game.ClientGame = Game.Game.extend({
     var pos = this.clickToScreenPos(e);
     this.mouse.pos.x = pos.x;
     this.mouse.pos.y = pos.y;
+    
+    var wp = this.screenToWorldPos(pos),
+        target = this.getObjectAt(wp),
+        hover;
+    if( this.selected != false && target != false && (hover = this.selected.onWorldHover(pos, target)) ){
+      this.mousehint = hover.txt;
+    }
+    else{
+      this.mousehint = "";
+    }
     
     
     if(
