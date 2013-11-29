@@ -2,7 +2,7 @@ Game.Item = Game.Object.extend({
   init: function(data, game, id){
     this._super(data, game, id);
     
-    this.Strings = {name: "null"};
+    this.strings = {name: "null"};
     
     this.type = "NULL";
   },

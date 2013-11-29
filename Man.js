@@ -4,13 +4,14 @@ Game.Man = Game.Living.extend({
     
     this.bbox = {x: 0, y: -15, w: 10, h: 15}; //Used to find clickables, adds this.pos
     
-    this.Strings.name = Game.STRINGS.MAN;
+    this.strings.name = Game.STRINGS.MAN;
   },
   loadData: function(data){
     this._super(data);
     
   },
   draw: function(time_d, time){
+    this._super(time_d, time);
     var ctx = this.game.ctx;
     ctx.moveTo(0,0);
     ctx.beginPath();
@@ -32,9 +33,9 @@ Game.Man = Game.Living.extend({
                   locali = i;
               items[n] = {
                 c: function(){
-                  console.log("item",localn,data.inventory.lists[locali][0].Strings.name);
+                  console.log("item",localn,data.inventory.lists[locali][0].strings.name);
                 },
-                txt: data.inventory.lists[locali][0].Strings.name + ": " + data.inventory.lists[locali].length
+                txt: data.inventory.lists[locali][0].strings.name + ": " + data.inventory.lists[locali].length
               };
             }
             console.log(items);
@@ -55,7 +56,7 @@ Game.Man = Game.Living.extend({
   },
   onWorldHover: function(pos, data){
     this._super(pos, data);
-    if(data instanceof Game.Living){
+    if(data instanceof Game.Living && data.id != this.id){
       return {txt: "Attack"};
     }
   }

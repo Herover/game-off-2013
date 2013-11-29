@@ -9,7 +9,7 @@ Game.WorldObject = Game.Object.extend({
     
     this.inventory = new Game.Inventory();
     
-    this.Strings = {name: Game.STRINGS.NULL};
+    this.strings = {name: Game.STRINGS.NULL};
     
     //this.pos = {x: 0, y: 0};
   },

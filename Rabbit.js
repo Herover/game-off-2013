@@ -6,6 +6,8 @@ Game.Rabbit = Game.Living.extend({
     this.bbox.h = 5;
     this.bbox.y = -5;
     
+    this.strings.name = Game.STRINGS.RABBIT;
+    
     var me = this;
     this.listen("reachmoveto", function(){
       setTimeout(function(){
@@ -20,6 +22,7 @@ Game.Rabbit = Game.Living.extend({
     
   },
   draw: function(time_d, time){
+    this._super(time_d, time);
     var ctx = this.game.ctx;
     ctx.moveTo(0,0);
     ctx.beginPath();

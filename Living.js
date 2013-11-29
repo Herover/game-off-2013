@@ -42,4 +42,8 @@ Game.Living = Game.WorldObject.extend({
       }
     }
   },
+  draw: function(time_d, time){
+    this._super(time_d, time);
+    this.game.ctx.fillText(this.strings.name, 0, 5);
+  }
 });

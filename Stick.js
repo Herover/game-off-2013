@@ -1,7 +1,7 @@
 Game.Stick = Game.Item.extend({
   init: function(data, game, id){
     this._super(data, game, id);
-    this.Strings.name = Game.STRINGS.ITEM_STICK;
+    this.strings.name = Game.STRINGS.ITEM_STICK;
     
     this.type = "STICK";
   },
