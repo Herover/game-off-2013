@@ -50,8 +50,8 @@
 
   stats_tick = new Stats();
   stats_tick.domElement.style.position = 'absolute';
-  stats_tick.domElement.style.right = '0px';
-  stats_tick.domElement.style.top = '0px';
+  stats_tick.domElement.style.left = '0px';
+  stats_tick.domElement.style.bottom = '0px';
   can.parentNode.appendChild( stats_tick.domElement );
   
   game = new Game.ClientGame(can, ctx);
@@ -66,6 +66,8 @@
   
   man = new Game.Man({pos:{x: 360, y: 180}}, game);
   game.addObject(man);
+  var stick = new Game.Stick({}, game);
+  man.inventory.add(stick);
   
   var lastTime = 0, tickrate = 1000/60;
   function tick(time){

@@ -13,7 +13,6 @@ Game.Rabbit = Game.Living.extend({
       setTimeout(function(){
         me.moveto({x: me.pos.x + Math.random()*200-100,
                    y: me.pos.y + Math.random()*200-100});
-        console.log("Rabbit moving to", me.movingto);
       }, Math.random()*5000);
     });
   },

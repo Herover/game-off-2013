@@ -17,7 +17,7 @@ Game.ClientGame = Game.Game.extend({
     
     this.contextmenu = new Game.ContextMenu(this);
     
-    this.viewport = {x: 0, y: 0, move: false, scale: 1, last: {x: 0, y: 0}};
+    this.viewport = {x: 0, y: 0, move: false, scale: 1, last: {x: 0, y: 0}, width: 0, height: 0};
     
     var me = this;
     can.addEventListener("click",          function(e){me.onClick.call(me,e);});
@@ -34,7 +34,7 @@ Game.ClientGame = Game.Game.extend({
     can.addEventListener("touchcancel",    function(e){me.onTouchCancel.call(me,e);});
     can.addEventListener("touchmove",      function(e){me.onTouchMove.call(me,e);});
     
-    window.addEventListener("resize",this.resize);
+    window.addEventListener("resize",      function(e){me.resize.call(me,e);});
     this.resize();
   },
   draw: function(time){
@@ -62,7 +62,26 @@ Game.ClientGame = Game.Game.extend({
     }
 	
     ctx.restore();
+    /*
+      Some of this could/should be done in a external object
+      Show GUI:
+        mouse hint
+        Inventory of currently selected
+    */
     ctx.fillText(this.mousehint, this.mouse.pos.x, this.mouse.pos.y);
+    
+    if(this.selected){
+      var times = 0;
+      this.ctx.beginPath();
+      for(var i in this.selected.inventory.lists){
+        var x = this.viewport.width - 60,
+            y = 50*times + 10;
+        this.ctx.rect(x, y, 50, 50);
+        ctx.fillText(this.selected.inventory.lists[i][0].strings.name + "(" + this.selected.inventory.lists[i].length + ")", x, y + 50);
+        times++;
+      }
+      this.ctx.stroke();
+    }
     
     
   },
@@ -210,6 +229,7 @@ Game.ClientGame = Game.Game.extend({
             }
           }
         }
+        //Right click away from selected
         if(this.selected && e.button == 2){
           this.selected.selected = false;
           this.selected = false;
@@ -293,8 +313,8 @@ Game.ClientGame = Game.Game.extend({
   }, 
   resize: function(e){
     //console.log(e);
-    can.width = window.innerWidth;
-    can.height = window.innerHeight;
+    this.can.width  = this.viewport.width  = window.innerWidth;
+    this.can.height = this.viewport.height = window.innerHeight;
 
    //this.viewsize = [window.innerWidth,window.innerHeight];
   }

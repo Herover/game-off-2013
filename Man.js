@@ -3,6 +3,7 @@ Game.Man = Game.Living.extend({
     this._super(data, game, id);
     
     this.bbox = {x: 0, y: -15, w: 10, h: 15}; //Used to find clickables, adds this.pos
+    this.inventory.max = 5;
     
     this.strings.name = Game.STRINGS.MAN;
   },
